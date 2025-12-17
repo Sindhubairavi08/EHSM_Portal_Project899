@@ -1,20 +1,21 @@
 <mvc:View controllerName="ehsm.controller.Login"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
-    xmlns:form="sap.ui.layout.form"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
     xmlns:core="sap.ui.core">
-    <Page id="loginPage" title="EHSM Safety Engineer Portal" floatingFooter="true">
+    <Page id="loginPage" title="EHSM Safety Portal" floatingFooter="true" backgroundDesign="List">
         <content>
             <FlexBox alignItems="Center" justifyContent="Center" height="100%" direction="Column" class="sapUiMediumMargin">
-                <Panel width="400px" headerText="Login" class="sapUiResponsiveMargin">
+                <Panel width="400px" headerText="Safety Engineer Login" class="sapUiResponsiveMargin sapUiContentPadding">
                     <content>
                         <VBox class="sapUiSmallMargin">
-                            <Label text="Employee ID" labelFor="inpEmployeeId"/>
-                            <Input id="inpEmployeeId" placeholder="Enter Employee ID" required="true"/>
-                            <Label text="Password" labelFor="inpPassword"/>
+                            <Label text="User ID" labelFor="inpUserId" design="Bold"/>
+                            <Input id="inpUserId" placeholder="Enter User ID" required="true"/>
+                            <Label text="Password" labelFor="inpPassword" design="Bold"/>
                             <Input id="inpPassword" type="Password" placeholder="Enter Password" required="true"/>
                         </VBox>
-                        <Button text="Login" type="Emphasized" press=".onLogin" width="100%"/>
+                        <Button text="Login" type="Emphasized" press=".onLogin" width="100%" class="sapUiSmallMarginTop"/>
                     </content>
                 </Panel>
             </FlexBox>

@@ -2,12 +2,12 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:core="sap.ui.core">
-    <Page title="Risk Management" showNavButton="true" navButtonPress=".onNavBack">
+    <Page title="Risk Assessment" showNavButton="true" navButtonPress=".onNavBack">
         <content>
-            <Table id="riskTable" 
+            <Table id="idRiskTable"
                 items="{
                     path: '/Z899_RISK',
-                    sorter: { path: 'RiskID', descending: false }
+                    sorter: { path: 'RiskKeyRef', descending: false }
                 }"
                 growing="true"
                 growingThreshold="20"
@@ -15,33 +15,29 @@
                 class="sapUiResponsiveMargin">
                 <headerToolbar>
                     <Toolbar>
-                        <Title text="Risks" level="H2"/>
+                        <Title text="Risk Assessments" level="H2"/>
                         <ToolbarSpacer/>
-                        <SearchField width="30%" search=".onFilterRisks" placeholder="Search by ID or Category"/>
+                        <SearchField width="30%" search=".onSearch" placeholder="Search Risk Key or Member"/>
                     </Toolbar>
                 </headerToolbar>
                 <columns>
-                    <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Risk ID" /></Column>
-                    <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Plant" /></Column>
-                    <Column><Text text="Description" /></Column>
-                    <Column minScreenWidth="Desktop" demandPopin="true"><Text text="Category" /></Column>
-                    <Column minScreenWidth="Desktop" demandPopin="true"><Text text="Severity" /></Column>
-                    <Column minScreenWidth="Desktop" demandPopin="true"><Text text="Likelihood" /></Column>
-                    <Column minScreenWidth="Desktop" demandPopin="true"><Text text="Mitigation" /></Column>
-                    <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Date" /></Column>
+                    <Column><Text text="Risk Key" /></Column>
+                    <Column><Text text="Team Member" /></Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Role" /></Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Regulation" /></Column>
+                    <Column minScreenWidth="Desktop" demandPopin="true"><Text text="Regulation URL" /></Column>
+                    <Column minScreenWidth="Desktop" demandPopin="true"><Text text="Created On" /></Column>
                     <Column minScreenWidth="Desktop" demandPopin="true"><Text text="Created By" /></Column>
                 </columns>
                 <items>
                     <ColumnListItem>
                         <cells>
-                            <Text text="{RiskID}" />
-                            <Text text="{Plant}" />
-                            <Text text="{RiskDescription}" />
-                            <Text text="{RiskCategory}" />
-                            <ObjectStatus text="{RiskSeverity}" state="{= ${RiskSeverity} === 'High' ? 'Error' : ${RiskSeverity} === 'Medium' ? 'Warning' : 'Success'}" />
-                            <Text text="{Likelihood}" />
-                            <Text text="{MitigationMeasures}" />
-                            <Text text="{path: 'RiskIdentificationDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' }}" />
+                            <Text text="{RiskKeyRef}" />
+                            <Text text="{TeamMember}" />
+                            <Text text="{Role}" />
+                            <Text text="{Regulation}" />
+                            <Link text="View Regulation" href="{RegulationURL}" target="_blank" />
+                            <Text text="{path: 'CreatedOn', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'MMM dd, yyyy' }}" />
                             <Text text="{CreatedBy}" />
                         </cells>
                     </ColumnListItem>

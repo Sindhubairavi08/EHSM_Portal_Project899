@@ -8,29 +8,6 @@ sap.ui.define([
 
     return Controller.extend("ehsm.controller.Risk", {
         onInit: function () {
-            var oRouter = this.getOwnerComponent().getRouter();
-            oRouter.getRoute("RouteRisk").attachMatched(this._onRouteMatched, this);
-        },
-
-        _onRouteMatched: function (oEvent) {
-            var oSession = this.getOwnerComponent().getModel("session");
-            var sEmpId = oSession ? oSession.getProperty("/EmployeeId") : null;
-
-            var aFilters = [];
-            // Assuming we filter by CreatedBy which matches EmployeeId as per common pattern, 
-            // or if there is an explicit EmployeeID field. 
-            // The prompt asks to filter using EmployeeId. 
-            if (sEmpId) {
-                // Using CreatedBy as it is a visible column and likely corresponds to the user's ID
-                // You can change this to "EmployeeID" if the OData service uses that field name.
-                aFilters.push(new Filter("CreatedBy", FilterOperator.EQ, sEmpId));
-            }
-
-            var oTable = this.byId("riskTable");
-            var oBinding = oTable.getBinding("items");
-            if (oBinding) {
-                oBinding.filter(aFilters);
-            }
         },
 
         onNavBack: function () {
@@ -44,24 +21,19 @@ sap.ui.define([
             }
         },
 
-        onFilterRisks: function (oEvent) {
-            var aFilter = [];
+        onSearch: function (oEvent) {
+            var aFilters = [];
             var sQuery = oEvent.getParameter("query");
             if (sQuery) {
-                aFilter.push(new Filter("RiskDescription", FilterOperator.Contains, sQuery));
+                aFilters.push(new Filter([
+                    new Filter("RiskKeyRef", FilterOperator.Contains, sQuery),
+                    new Filter("TeamMember", FilterOperator.Contains, sQuery)
+                ], false));
             }
 
-            var oSession = this.getOwnerComponent().getModel("session");
-            var sEmpId = oSession ? oSession.getProperty("/EmployeeId") : null;
-            if (sEmpId) {
-                aFilter.push(new Filter("CreatedBy", FilterOperator.EQ, sEmpId));
-            }
-
-            var oTable = this.byId("riskTable");
+            var oTable = this.byId("idRiskTable");
             var oBinding = oTable.getBinding("items");
-            if (oBinding) {
-                oBinding.filter(aFilter);
-            }
+            oBinding.filter(aFilters);
         }
     });
 });

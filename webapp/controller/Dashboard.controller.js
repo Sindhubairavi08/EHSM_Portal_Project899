@@ -5,21 +5,21 @@ sap.ui.define([
     "use strict";
 
     return Controller.extend("ehsm.controller.Dashboard", {
-        onPressRisk: function () {
-            this.getOwnerComponent().getRouter().navTo("RouteRisk");
-        },
-
         onPressIncident: function () {
             this.getOwnerComponent().getRouter().navTo("RouteIncident");
         },
 
+        onPressRisk: function () {
+            this.getOwnerComponent().getRouter().navTo("RouteRisk");
+        },
+
         onLogout: function () {
-            // Clear session model
+            // Clear session
             var oSession = this.getOwnerComponent().getModel("session");
             if (oSession) {
                 oSession.setData({});
             }
-            MessageToast.show("Logged out successfully");
+            MessageToast.show("Logged out");
             this.getOwnerComponent().getRouter().navTo("RouteLogin");
         }
     });

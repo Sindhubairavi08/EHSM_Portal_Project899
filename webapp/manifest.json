@@ -121,14 +121,14 @@
           "target": "TargetDashboard"
         },
         {
-          "name": "RouteRisk",
-          "pattern": "risk",
-          "target": "TargetRisk"
+          "name": "RouteIncident",
+          "pattern": "incidents",
+          "target": "TargetIncident"
         },
         {
-          "name": "RouteIncident",
-          "pattern": "incident",
-          "target": "TargetIncident"
+          "name": "RouteRisk",
+          "pattern": "risks",
+          "target": "TargetRisk"
         }
       ],
       "targets": {
@@ -140,13 +140,13 @@
           "viewId": "Dashboard",
           "name": "Dashboard"
         },
-        "TargetRisk": {
-          "viewId": "Risk",
-          "name": "Risk"
-        },
         "TargetIncident": {
           "viewId": "Incident",
           "name": "Incident"
+        },
+        "TargetRisk": {
+          "viewId": "Risk",
+          "name": "Risk"
         }
       }
     },
