@@ -1,71 +1,140 @@
+// sap.ui.define([
+//     "sap/ui/core/mvc/Controller",
+//     "sap/m/MessageToast",
+//     "sap/m/MessageBox",
+//     "sap/ui/model/json/JSONModel",
+//     "sap/ui/model/Filter",
+//     "sap/ui/model/FilterOperator"
+// ], function (Controller, MessageToast, MessageBox, JSONModel, Filter, FilterOperator) {
+//     "use strict";
+
+//     return Controller.extend("ehsm.controller.Login", {
+//         onInit: function () {
+//             // Init logic
+//         },
+
+//         onLogin: function () {
+//             var sUserId = this.byId("inpUserId").getValue();
+//             var sPassword = this.byId("inpPassword").getValue();
+
+//             if (!sUserId || !sPassword) {
+//                 MessageToast.show("Please enter both User ID and Password.");
+//                 return;
+//             }
+
+//             var oModel = this.getOwnerComponent().getModel();
+//             var that = this;
+
+//             // Assume we filter Z899_LOGIN by UserID and Password directly
+//             // Note: In a real scenario, password should be sent via POST or header, 
+//             // but requirements strictly say "calling the OData entity set Z899_LOGIN"
+
+//             var aFilters = [
+//                 new Filter("UserID", FilterOperator.EQ, sUserId),
+//                 new Filter("Password", FilterOperator.EQ, sPassword)
+//             ];
+
+//             sap.ui.core.BusyIndicator.show(0);
+
+//             oModel.read("/Z899_LOGIN", {
+//                 filters: aFilters,
+//                 success: function (oData) {
+//                     sap.ui.core.BusyIndicator.hide();
+//                     if (oData.results && oData.results.length > 0) {
+//                         var oUser = oData.results[0];
+//                         // Validate based on response fields
+//                         // Assuming response has a status field or successful read implies validity if strict
+//                         // Let's check a flag or just assume existence = success map to requirements
+
+//                         // "validating credentials based on the OData response"
+//                         // We'll check if a Status field is 'S' or similar if present, else existence is enough.
+//                         // I'll add a check for a 'Status' field to be safe.
+
+//                         // Creating session model
+//                         var oSessionModel = new JSONModel({
+//                             UserID: sUserId,
+//                             UserData: oUser
+//                         });
+//                         that.getOwnerComponent().setModel(oSessionModel, "session");
+
+//                         MessageToast.show("Login Successful");
+//                         that.getOwnerComponent().getRouter().navTo("RouteDashboard");
+//                     } else {
+//                         MessageBox.error("Invalid Credentials");
+//                     }
+//                 },
+//                 error: function (oError) {
+//                     sap.ui.core.BusyIndicator.hide();
+//                     MessageBox.error("Login failed. Please check your connection.");
+//                 }
+//             });
+//         }
+//     });
+// });
+
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageToast",
     "sap/m/MessageBox",
     "sap/ui/model/json/JSONModel",
     "sap/ui/model/Filter",
-    "sap/ui/model/FilterOperator"
-], function (Controller, MessageToast, MessageBox, JSONModel, Filter, FilterOperator) {
+    "sap/ui/model/FilterOperator",
+    "sap/ui/core/BusyIndicator"
+], function (Controller, MessageToast, MessageBox, JSONModel, Filter, FilterOperator, BusyIndicator) {
     "use strict";
 
     return Controller.extend("ehsm.controller.Login", {
-        onInit: function () {
-            // Init logic
-        },
 
         onLogin: function () {
-            var sUserId = this.byId("inpUserId").getValue();
-            var sPassword = this.byId("inpPassword").getValue();
+            var sUserId = this.byId("inpUserId").getValue().trim();
+            var sPassword = this.byId("inpPassword").getValue().trim();
 
             if (!sUserId || !sPassword) {
-                MessageToast.show("Please enter both User ID and Password.");
+                MessageToast.show("Please enter both User ID and Password");
                 return;
             }
 
             var oModel = this.getOwnerComponent().getModel();
+            var oRouter = this.getOwnerComponent().getRouter();
             var that = this;
 
-            // Assume we filter Z899_LOGIN by UserID and Password directly
-            // Note: In a real scenario, password should be sent via POST or header, 
-            // but requirements strictly say "calling the OData entity set Z899_LOGIN"
-
+            // ✅ Use EXACT OData property names
             var aFilters = [
-                new Filter("UserID", FilterOperator.EQ, sUserId),
-                new Filter("Password", FilterOperator.EQ, sPassword)
+                new Filter("user_id", FilterOperator.EQ, sUserId),
+                new Filter("password", FilterOperator.EQ, sPassword)
             ];
 
-            sap.ui.core.BusyIndicator.show(0);
+            BusyIndicator.show(0);
 
             oModel.read("/Z899_LOGIN", {
                 filters: aFilters,
+
                 success: function (oData) {
-                    sap.ui.core.BusyIndicator.hide();
+                    BusyIndicator.hide();
+
                     if (oData.results && oData.results.length > 0) {
-                        var oUser = oData.results[0];
-                        // Validate based on response fields
-                        // Assuming response has a status field or successful read implies validity if strict
-                        // Let's check a flag or just assume existence = success map to requirements
 
-                        // "validating credentials based on the OData response"
-                        // We'll check if a Status field is 'S' or similar if present, else existence is enough.
-                        // I'll add a check for a 'Status' field to be safe.
-
-                        // Creating session model
+                        // Login success → session model
                         var oSessionModel = new JSONModel({
-                            UserID: sUserId,
-                            UserData: oUser
+                            user_id: sUserId,
+                            loginData: oData.results[0],
+                            isLoggedIn: true
                         });
+
                         that.getOwnerComponent().setModel(oSessionModel, "session");
 
                         MessageToast.show("Login Successful");
-                        that.getOwnerComponent().getRouter().navTo("RouteDashboard");
+
+                        oRouter.navTo("RouteDashboard");
+
                     } else {
-                        MessageBox.error("Invalid Credentials");
+                        MessageBox.error("Invalid User ID or Password");
                     }
                 },
-                error: function (oError) {
-                    sap.ui.core.BusyIndicator.hide();
-                    MessageBox.error("Login failed. Please check your connection.");
+
+                error: function () {
+                    BusyIndicator.hide();
+                    MessageBox.error("Login service failed. Please try again.");
                 }
             });
         }
